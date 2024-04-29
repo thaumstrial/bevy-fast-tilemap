@@ -151,6 +151,14 @@ where
             (self.map.map_size().x * self.map.map_size().y) as usize,
             0u32,
         );
+        self.map.map_ft_color.resize(
+            (self.map.map_size().x * self.map.map_size().y) as usize,
+            Color::WHITE,
+        );
+        self.map.map_bg_color.resize(
+            (self.map.map_size().x * self.map.map_size().y) as usize,
+            Color::BLACK,
+        );
 
         initializer(&mut MapIndexer::<UserData> { map: &mut self.map });
 
@@ -165,7 +173,7 @@ where
     /// The callback will receive a `UVec2` and return a `u32`.
     pub fn build_and_set<F>(self, mut initializer: F) -> Map<UserData>
     where
-        F: FnMut(UVec2) -> u32,
+        F: FnMut(UVec2) -> (u32, Color, Color)
     {
         let sx = self.map.map_size().x;
         let sy = self.map.map_size().y;
@@ -173,7 +181,8 @@ where
         self.build_and_initialize(|m: &mut MapIndexer<UserData>| {
             for y in 0..sy {
                 for x in 0..sx {
-                    m.set(x, y, initializer(uvec2(x, y)));
+                    let (tile, ft, bg) = initializer(uvec2(x, y));
+                    m.set(x, y, tile, ft, bg);
                 }
             }
         })

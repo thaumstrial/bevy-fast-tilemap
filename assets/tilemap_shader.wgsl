@@ -71,6 +71,10 @@ var<uniform> user_data: UserData;
 
 @group(2) @binding(100)
 var<storage> map_texture: array<u32>;
+@group(2) @binding(103)
+var<storage> map_ft_color: array<vec4<f32>>;
+@group(2) @binding(104)
+var<storage> map_bg_color: array<vec4<f32>>;
 
 @group(2) @binding(101)
 var atlas_texture: texture_2d<f32>;
@@ -191,6 +195,12 @@ struct MapPosition {
 ///
 fn get_tile_index(map_position: vec2<i32>) -> u32 {
     return map_texture[map_position.y * i32(map.map_size.x) + map_position.x];
+}
+fn get_tile_ft_color(map_position: vec2<i32>) -> vec4<f32> {
+    return map_ft_color[map_position.y * i32(map.map_size.x) + map_position.x];
+}
+fn get_tile_bg_color(map_position: vec2<i32>) -> vec4<f32> {
+    return map_bg_color[map_position.y * i32(map.map_size.x) + map_position.x];
 }
 
 fn blend(c0: vec4<f32>, c1: vec4<f32>) -> vec4<f32> {

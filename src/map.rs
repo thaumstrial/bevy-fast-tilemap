@@ -46,6 +46,12 @@ where
     /// Texture containing the tile IDs (one per each pixel)
     #[storage(100, read_only)]
     pub(crate) map_texture: Vec<u32>,
+    /// ft_color
+    #[storage(103, read_only)]
+    pub(crate) map_ft_color: Vec<Color>,
+    /// bg_color
+    #[storage(104, read_only)]
+    pub(crate) map_bg_color: Vec<Color>,
 
     /// Atlas texture with the individual tiles
     #[texture(101)]
@@ -363,18 +369,20 @@ where
     }
 
     /// Set tile at given position.
-    pub fn set_uvec(&mut self, i: UVec2, v: u32) {
-        self.set(i.x, i.y, v)
+    pub fn set_uvec(&mut self, i: UVec2, v: u32, ft_color: Color, bg_color: Color) {
+        self.set(i.x, i.y, v, ft_color, bg_color)
     }
 
     /// Set tile at given position.
-    pub fn set(&mut self, x: u32, y: u32, v: u32) {
+    pub fn set(&mut self, x: u32, y: u32, v: u32, ft_color: Color, bg_color: Color) {
         // ensure x/y do not go out of bounds individually (even if the final index is in-bounds)
         if x >= self.size().x || y >= self.size().y {
             return;
         }
         let idx = y as usize * self.size().x as usize + x as usize;
         self.map.map_texture[idx] = v;
+        self.map.map_ft_color[idx] = ft_color;
+        self.map.map_bg_color[idx] = bg_color;
     }
 
     pub fn world_to_map(&self, world: Vec2) -> Vec2 {
